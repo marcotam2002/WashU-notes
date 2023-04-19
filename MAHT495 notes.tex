@@ -1,0 +1,121 @@
+\documentclass[12pt]{article}
+% We can write notes using the percent symbol!
+% The first line above is to announce we are beginning a document, an article in this case, and we want the default font size to be 12pt
+\usepackage[utf8]{inputenc}
+% This is a package to accept utf8 input.  I normally do not use it in my documents, but it was here by default in Overleaf.
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+% These three packages are from the American Mathematical Society and includes all of the important symbols and operations 
+\usepackage{fullpage}
+% By default, an article has some vary large margins to fit the smaller page format.  This allows us to use more standard margins.
+
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem*{remark}{Remark}
+\newtheorem{terminology}{Terminology}
+\newtheorem{example}{Example}
+
+\setlength{\parskip}{1em}
+% This gives us a full line break when we write a new paragraph
+
+\begin{document}
+% Once we have all of our packages and setting announced, we need to begin our document.  You will notice that at the end of the writing there is an end document statements.  Many options use this begin and end syntax.
+
+\begin{center}
+    \Large MATH495 Stochastic Process Note
+\end{center}
+
+\section{Background}
+
+During my exchange in WashU, I've typed some of my notes from lectures and collaborated some with online resources and my understanding. This is mainly for the course - Stochastic Process, as the professor doesn't have a typed note. Since I typed the notes quite rush, there maybe some mistakes or typos. I've typed the note mainly for my revision and probably future review. But I am also glad if this note can help anyone need it.
+
+\section{CTMC Basic Properties} 
+
+\begin{definition}
+     A continuous time process $\{X_t\}_{t \geq 0}$ taking values in a countable set S is said to be a (continuous-time) markov chain if, for any $s_0 < s_1 < \cdots < s_n < s < t$ and $i ,j, i_0, \cdots , i_n$ we have $P[X_{t+s} = j | X_s = i, X_{s_n} = i_n, \cdots , X_{s_0} = i_0] = P[X_t = j | X_0 = i]$
+\end{definition}
+
+\begin{terminology}
+    $p_{ij}(t) = P[X_t = j | X_0 = i]$ are called \textbf{transition probabilities}. This means the starting state is i when time = 0 and going to j when time = t. 
+    \\
+    \\The matrix $P(t) = \begin{bmatrix}
+ p_{11}(t) & \cdots & p_{1N}(t)\\
+ \vdots  &  & \vdots \\
+ p_{N1}(t) & \cdots & p_{NN}(t)
+\end{bmatrix}$ is called the transition probability matrix of the chain.
+\end{terminology}
+
+\begin{example}
+ A homogeneous Poisson process $\{N_t\}_{t\geq0}$ is a markov process with state space S = $\{0, 1, 2, \cdots\}$.
+\end{example}
+
+\begin{theorem}
+    Suppose $\{Y_n\}_{n \geq 0}$ is a discrete-time markov chain and $\{N_t\}_{t\geq0}$ is an independent homogeneous Poisson process. Then, $X_t = Y_{N_t}$ is a markov process.
+\end{theorem}
+
+\subsection{Matrix exponential}
+
+\begin{lemma}
+    $e^{A} = \sum_{k = 0}^{\infty } \frac{1}{k!}A^k $ where $A^0 = I$
+    \begin{enumerate}
+        \item $e^0 = I$ where 0 is the zero matrix
+        \item $e^{cI} = e^cI$ for some scalar c
+        \item $e^{UAU^{-1}} = Ue^AU^{-1}$
+        \item $AB = BA \Rightarrow e^Ae^B = e^{A+B}$
+    \end{enumerate}
+\end{lemma}
+
+\subsection{Fundamental Construction of CTMC}
+
+One very large class of CTMC (that cover almost all cases) is based on independent exponential times. The parameters or inputs of the process are some nonnegative constants $q(i,j), i, j \in S$ with $i \ne j$. which are called \textbf{jump rates}. (as we shall see $q(i,j)$ is the rate at which the chain jump from i to j).
+\\
+\\Next, set
+\begin{center}
+$\lambda _{i} = \sum_{j \ne i} q(i,j)$
+
+$r_{i,j} = \frac{q(i,j)}{\lambda_i}$
+\end{center}
+where $\lambda_i$ is the rate at which the chain leaves i and $r(i,j)$ is the probability of going to j when leaving i.
+
+\subsection{Idea of the Construction Procedure}
+
+The previous parameters determine the dynamics of the chain in a simple way. If the chain $X$ arrives to a state i such that $\lambda_i = 0$, then it would stay there forever. But if $\lambda_i > 0$ then the chain will stay there an exponential time d with rate $\lambda$. The chain with then decide to jump to another state $j \ne i$ with probability $r(i,j)$.
+\\
+\\Equivalently, we can explicitly write $\{X_t\}$ in terms of a discrete time markov chain $\{Y_n\}_{n\geq0}$ with transition probabilities $r(i,j)$ and a sequence of i.i.d exponential ($\lambda = 1$) time $\tau _0, \tau _1, \cdots$ as follows:
+
+\begin{center}
+    $X(t) = Y_n$ if $T_n \leq t < T_{n+1}$
+\end{center}
+
+where $T_n = t_1 + \cdots + t_n$ with $t_i = \frac{\tau_{i-1}}{\lambda(Y_{i-1})} \sim exp(\lambda(Y_{i-1}))$
+
+\begin{terminology}
+    The discrete-time process $\{Y_n\}_{n\geq0}$ that records the consecutive states of the chain is called the \textbf{embedded markov chain} and it can be proved that it is indeed a markov chain.
+    \\
+    \\The rates $q(i,j)$ are typically arrange in the following matrix form
+    \begin{center}
+        $Q = \begin{bmatrix}
+         -\lambda _1 & q(1,2) & q(1,3) & \cdots & q(1,N)\\
+         q(2,1) & -\lambda _2 & q(2,3) & \cdots & q(2,N)\\
+         \vdots &  &  & & \vdots \\
+         q(N,1) & q(N,2) & q(N,3) & \cdots & -\lambda _N\\
+        \end{bmatrix}$
+    \end{center}
+    This matrix is called \textbf{the infinitesimal generator} of the process.
+    \\
+    \\It is customary to draw the chain as a connected graph with indices representing states and arrows connecting states $i \ne j$ such that $q(i,j) > 0$. Specifically, an arrow goes from i to j if $q(i,j) > 0$. The arrow is labeled by $q(i.j)$. This graph is sometimes called \textbf{transition rate graph}.
+\end{terminology}
+
+\subsection{Interpretation of $q(i,j)$}
+
+As it turns out, $\lim_{h  \to 0} \frac{P[X_{t+h}|X_t=i]}{h}=q(i,j), i\ne j$ or equivalently, $P[X_{t+h}=j|X_t=i]=q(i,j)h+\theta(h)$. The second definition is the probability that a chain in state i jumps to another state j in a small time interval h.
+\\
+\\We can see from the definition $q(i,j)$ means the probability goes from state i to state j in a very short time. Therefore, we say this probability as jump rate.
+
+\section{CTMC Absorption times Probability}
+
+
+\end{document}
