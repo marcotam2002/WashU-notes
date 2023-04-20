@@ -1,0 +1,102 @@
+\documentclass[12pt]{article}
+% We can write notes using the percent symbol!
+% The first line above is to announce we are beginning a document, an article in this case, and we want the default font size to be 12pt
+\usepackage[utf8]{inputenc}
+% This is a package to accept utf8 input.  I normally do not use it in my documents, but it was here by default in Overleaf.
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{tikz}
+\usepackage{tkz-euclide}
+\usepackage{xcolor}
+% These three packages are from the American Mathematical Society and includes all of the important symbols and operations 
+\usepackage{fullpage}
+% By default, an article has some vary large margins to fit the smaller page format.  This allows us to use more standard margins.
+
+\setlength{\parskip}{0em}
+% This gives us a full line break when we write a new paragraph
+
+\begin{document}
+% Once we have all of our packages and setting announced, we need to begin our document.  You will notice that at the end of the writing there is an end document statements.  Many options use this begin and end syntax.
+
+\begin{center}
+    \Large CSE541 Advanced Algorithm Note
+\end{center}
+
+\section{Background}
+
+During my exchange in WashU, I've typed some of my notes from lectures and collaborated some with online resources and my understanding. This is mainly for the course - Advanced Algorithm, as the professor doesn't have a typed note. Since I typed the notes quite rush, there maybe some mistakes or typos. I've typed the note mainly for my revision and probably future review. But I am also glad if this note can help anyone need it.
+
+\section{Overview of designing efficient algorithms}
+
+Our first goal:
+
+\begin{enumerate}
+    \item Design a polynomial time algorithm
+    \item If fail, some problem is NP-hard
+    \item Design a pseudo-polynomial time algorithm
+    \item If fail, some problem is NP-hard in strong sense
+    \item Solve using SAT-solver
+    \item If fail, some problem is $\Sigma_2^p$ or $\Pi_2^p$
+    \item Design an exponential-time algorithm
+\end{enumerate}
+\noindent Our second goal: Design an algorithm that solve the problem approximately by using Fixed Parameter Tractable algorithm and algorithm using prediction.
+
+\subsection{Algorithm efficiency}
+
+\begin{enumerate}
+    \item Divide and conquer
+    \item Substitution method
+    \item Recursion tree
+    \item Master method
+    \item Dynamic programming
+\end{enumerate}
+
+\subsection{Lower bound}
+
+\begin{enumerate}
+    \item NPC is a lower bound
+    \item $\Omega(nlogn)$ for sorting
+    \item P, NP, coNP, etc.
+    \item Strong NP-hardness
+    \item PSPACE "and above"
+    \item $\Sigma_2^p$, $\Pi_2^p$, {PH}
+\end{enumerate}
+
+\subsection{Tools}
+
+\begin{enumerate}
+    \item Pseudo-polynomial is better than truly exponential 
+    \item Idea of reduction
+    \item Relationship amongst classes
+    \item polynomial-time reduciblility
+    \item pseudo-polynomial transformation
+    \item Savitch's theorem, time and space hierarchy theorems
+    \item Oracles, $P^{NP}$ and $\bigtriangleup _2^p$
+\end{enumerate}
+
+\section{NP-completeness} 
+
+P, NP, NP-Hard and NP-Complete are sets of problems, defined as follows:
+\begin{enumerate}
+    \item P: can be solved by polynomial time algorithm
+    \item NP: can be verified by polynomial time algorithm
+    \item
+    \item
+\end{enumerate}
+
+\section{coNP}
+
+\section{Space complexity (PSPACE and NPSPACE)}
+
+\section{Polynomial Hierarchy (PH)}
+
+\section{Fixed Parameter Tractable (FPT)}
+
+\section{Algorithms using prediction}
+
+
+
+\end{document}
