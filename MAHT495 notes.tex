@@ -115,7 +115,193 @@ As it turns out, $\lim_{h  \to 0} \frac{P[X_{t+h}|X_t=i]}{h}=q(i,j), i\ne j$ or 
 \\
 \\We can see from the definition $q(i,j)$ means the probability goes from state i to state j in a very short time. Therefore, we say this probability as jump rate.
 
+\subsection{Limiting distribution}
+
+The following theorem formalizes the face that the chain describes in the construction procedure is indeed a CTMC:
+
+\begin{theorem}
+    Let $\{X_t\}t>0$ be the process. Then $\{X_t\}$ is CTMC with transition probability
+    \begin{center}
+        $P(t) = \begin{bmatrix}
+         P_{11}(t) & \cdots & P_{1N}(t) \\
+         \vdots &  & \vdots \\
+         P_{N1}(t) & \cdots & P_{NN}(t)
+        \end{bmatrix} = e^{tQ}$
+    \end{center}
+\end{theorem}
+
+\begin{lemma}
+    In particular, if Q has the eigendecomposition: $Q = U\Lambda U^{-1}$ where $\Lambda = diag(\alpha_1, \cdots, \alpha_N)$ is the diagonal matrix of eigenvalues, then $P(t) = e^{tQ} = Ue^{t\Lambda}U^{-1}$, where $e^{t\Lambda}=diag(e^{t\alpha_1}, \cdots, e^{t\alpha_N})$.
+\end{lemma}
+
+\begin{lemma}
+    Note that $\alpha = 0$ is always an eigenvalue for Q corresponding to the eigenvector $[1,1, \cdots, 1]$. Moreover, note that $\lim_{t \to \infty}P(t)$ exists iff all $\alpha_i \leq 0$.
+\end{lemma}
+
+\begin{example}
+    $Q = \begin{bmatrix}
+     -1 & 1\\
+     2 & -2
+    \end{bmatrix}$ Find its transition probabilities and determine its long term limiting distribution, if it exists, $\lim_{t \to \infty}P[X_t = j | X_0 = i] = \pi_j$.
+
+    \begin{enumerate}
+        \item We first diagonalize Q. Note that we have $\lambda = 0$ or $\lambda = -3$.
+        \item For $\lambda = 0$, the eigenvector $= [1, 1]^T$. For $\lambda = -3$, the eigenvector $= [1, -2]^T$.
+        \item Compute $P_t = Ue^{tQ}U^{-1} = \begin{bmatrix}
+         \frac{2}{3}+\frac{1}{3}e^{-3t} & \frac{1}{3}-\frac{1}{3}e^{-3t}\\
+         \frac{2}{3}-\frac{2}{3}e^{-3t} & \frac{1}{3}+\frac{2}{3}e^{-3t}
+        \end{bmatrix}$
+        \item $\lim_{t \to \infty}P(t) = \begin{bmatrix}
+         \frac{2}{3} & \frac{1}{3}\\
+         \frac{2}{3} & \frac{1}{3}
+        \end{bmatrix}$ so $\pi = [\frac{2}{3}, \frac{1}{3}]$
+    \end{enumerate}
+\end{example}
+
+\begin{remark}
+    In the example above, $[\frac{2}{3}, \frac{1}{3}]$ is the limiting distribution. This coincides with the row of $U^{-1}$ corresponding to the eigenvalue $\alpha = 0$. In that example, the top row of $U^{-1}$. The limit $\lim_{t \to \infty}P[X_t = i]$ exists whenever $\alpha_i \leq 0, \forall i$.
+    \\
+    \\But, in order for this not to depend on the initial distribution, we must have that 0 is a simple eigenvalue and all other $\alpha_i$ must be negative.
+\end{remark}
+
 \section{CTMC Absorption times Probability}
 
+For a discrete-time MC< we consider the following problems:
+\begin{enumerate}
+    \item \textbf{Absorption Times Problems}\\
+    \\ The average time it takes for the chain to be absorbed by one of the recurrent classes when starting at a transient state.
+    \item \textbf{Absorption Probability Problems}\\
+    \\ What is the probability that when starting at some state i, the chain will be absorbed by a specific recurrent class instead of others?
+\end{enumerate}
+In this section, we will show how to answer this kind of questions for a CTMC.
 
+\subsection{Solution procedure for problem 1}
+
+For the absorption times problem, suppose A consists of all recurrent states and $T_r = S \setminus A$ are the transient states. We want to compute:
+\begin{center}
+    $g(i) = E_i[T_A]$ where $T_A = inf\{t\geq0: X_t \in A\}$
+\end{center}
+In this case, we have $g = \begin{bmatrix}
+ g(i_1) \\
+\vdots \\
+g(i_m) \\
+\end{bmatrix} = (-Q^{sub})\begin{bmatrix}
+ 1\\
+ \vdots\\
+1
+\end{bmatrix}$
+where $Q^{sub}$ is the submatrix of Q corresponding to the transient states.
+
+\begin{example}
+    A shop has two barbers that can cut hair at rate 3 people per hour. Customers arrive at times of a rate 2 Poisson process, but will leave if there are two people getting their haircut and two waiting. The state of the system to be the number of people in the shop. Find $P_i[V_0 < V_4]$ for $i = 1,2,3$.
+    \\
+    \\(a) Derive the infinitesimal generator Q.
+    \\(b) Compute $E[T_0|X_0=x]$, $x = 1,2,3,4$, where $T_0 = inf\{t>0: X_t=0\}$.
+    \\
+    \\We can find the transition rate graph first with $q(i,i+1) = 2$ for $i = 0,1,2,3$, $q(i,i-1)=6$ for $i = 2,3,4$ and $q(1,0) = 3$. $q(i,i+1) = 2$ because customers arrive at times of a rate 2. We have two barbers so the shop can have 6 people hair cut per hour. Therefore, when we have more than 1 customer, $q(i,i-1)=6$. While if we only have 1 customer, then it is not related to the number of the barbers so $q(1,0) = 3$.
+    \\
+    \\Hence, we can write $Q = \begin{bmatrix}
+         -2 & 2 & 0 & 0 & 0 \\
+         3 & -5 & 2 & 0 & 0\\
+         0 & 6 & -8 & 2 & 0\\
+         0 & 0 & 6 & -8 & 2\\
+         0 & 0 & 0 & 6 & -6
+        \end{bmatrix}$.
+    \\
+    \\Note that $q(0,1)=2$ means the rate of arrival of new customers; $q(1,0)=3$ means the rate at which 1 customer is served by the barber; $q(2,1)=6$ means the rate at which the two customers will be served.
+    \\
+    \\Suppose $X_0 = 1$ (only one customer in the shop). Let $D_1$ be the time to serve the customer $\sim exp(\lambda=3)$ and $A_1$ be the arrival time of a new customer $\sim exp(\lambda=2)$. Then, the time the chain will spend in time 0 is $T_0 = min\{D_1,A_1\} \sim(3+2) \Rightarrow \lambda_0 = $ holding rate at time 0 $= 5$. After $T_0$, the chain will jump to either state 0 or state 2 with probabilities $r(1,0) = P[D_1 < A_1] = \frac{3}{5}$ and $r(1,0) = P[D_1 > A_1] = \frac{2}{5}$. Recalling that $r(i,j) = \frac{q(i,j)}{\lambda_i}$, we get the rates $q(1,0) = \frac{3}{5}\times5=3$ and $q(1,2) = \frac{2}{5}\times5=2$
+    \\
+    \\Similarly, if $X_0 = 2$, the time X spends in time 2 is $T_2=min\{D_1,D_2,A_1\} \sim exp(3+3+2)$. Then $\lambda_2 = 8$. After $T_2$, the chain jumps to state 1 or 3 with probs: $r(2,1) = P(min\{D_1,D_2\}<A_1) = \frac{6}{8}$ and $r(2,3) = P(min\{D_1,D_2\}>A_1) = \frac{2}{8}$. Then, we get the rates $q(2,1) = \frac{6}{8}\times8=6$ and $q(2,3) = \frac{2}{8}\times8=2$.
+    \\
+    \\Now, we discuss part b. The idea is to think of state 0 as an absorbing state and then follow the procedure.
+    \begin{enumerate}
+        \item Extract the matrix $Q^{sub}$.\\
+        \\$Q^{sub} = \begin{bmatrix}
+         -5 & 2 & 0 & 0\\
+         6 & -8 & 2 & 0\\
+         0 & 6 & -8 & 2\\
+         0 & 0 & 6 & -6
+        \end{bmatrix}$.
+        \item Compute $(-Q^{sub})^{-1}$
+        \item Multiply by $(1,1,1,1)^T$
+    \end{enumerate}
+    Hence, we get $g(i) = (\frac{40}{81}, \frac{119}{162}, \frac{155}{162},  \frac{91}{81})$ where $E[T_0|X_0=0] = \frac{40}{81}$.
+\end{example}
+
+\subsection{Solution procedure for problem 2}
+
+For absorption probability, it should be clear that we can consider the analogous question for the embedded discrete-time chain $\{Y_n\}_{n\geq0}$ with transition probabilities $r(i,j)=\frac{q(i,j)}{\lambda_i}$.
+\\
+\\But we can also use directly Q. Concretely, suppose we have 2 closed recurrent classes $R_1$ and $R_2$ and the rest are transient $T_r = S \setminus (R_1 \cup R_2) = {i_1, \cdots, i_m}$.
+\\
+\\We want to compute $l(i) = P_i[T_{R_1} < T_{R_2}]$, $i \in T_r$. Then $\begin{bmatrix}
+l(i_1) \\
+\vdots \\
+l(i_m)
+\end{bmatrix} = (-Q^{sup})^{-1}\begin{bmatrix}
+V_{R_1}(i_1) \\
+\vdots \\
+V_{R_1}(i_m)
+\end{bmatrix}$\\
+\\where $Q^{sup}$ is the submatrix of Q corresponding to the transient states and\\
+\\$V_{R_1} = \begin{bmatrix}
+V_{R_1}(i_1) \\
+\vdots \\
+V_{R_1}(i_m)
+\end{bmatrix} = \begin{bmatrix}
+\sum_{j \in R_1} q(i_1,j)\\
+\vdots \\
+\sum_{j \in R_1} q(i_m,j)
+\end{bmatrix}$.
+\begin{example}
+    A shop has two barbers that can cut hair at rate 3 people per hour. Customers arrive at times of a rate 2 Poisson process, but will leave if there are two people getting their haircut and two waiting. The state of the system to be the number of people in the shop. Find $P_i[T_0 < T_4]$ for $i = 1,2,3$.
+    \\
+    \\The idea is to treat {0} and {4} as absorbing states and following the below procedure:
+    \begin{enumerate}
+        \item Extract the matrix $Q^{sub}$\\
+        \\$Q^{sub} = \begin{bmatrix}
+         -5 & 2 & 0\\
+         6 & -8 & 2\\
+         0 & 6 & -8
+        \end{bmatrix}$.
+        \item Compute $(-Q^{sup})^{-1}$
+        \item Compute $V_{R_1} = \begin{bmatrix}
+         q(1,0)\\
+         q(2,0)\\
+         q(3,0)
+        \end{bmatrix} = \begin{bmatrix}
+         3\\
+         0\\
+         0
+        \end{bmatrix}$.
+        \item Compute $h = (-Q^{sup})^{-1}V_{R_1} = \begin{bmatrix}
+         \frac{39}{41}\\
+         \frac{36}{41}\\
+         \frac{27}{41}
+        \end{bmatrix}$.
+        
+    \end{enumerate}
+    So, for instance, when having 1 initial customer, about 95\% of the time the shop will eventually be empty before being full.
+\end{example}
+
+\section{Final Remarks}
+
+\section{Brownian Motion}
+
+Brownian motion is a stochastic process, which is rooted in a physical phenomenon discovered almost 200 years ago. In 1827, the botanist Robert Brown, observing pollen grains suspended in water, noted the erratic and continuous movement of tiny particles ejected from the grains. He studied the phenomenon for many years, ruled out the belief that it emanated from some "life force" within the pollen, but could not explain the motion. Neither could any other scientist of the 19th century.
+\\
+\\In 1905, Albert Einstein solved the riddle in his paper, On the movement of small particles suspended in a stationary liquid demanded by the molecular-kinetic theory of heat. Einstein explained the movement by the continual bombardment of the immersed particles by the molecules in the liquid, resulting in "motions of such magnitude that these motions can easily be detected by a microscope". Einstein's theoretical explanation was confirmed 3 years later by empirical experiment, which led to the acceptance of the atomice nature of matter.
+
+\subsection{Standard Brownian motion or Wiener Process}
+
+\begin{definition}
+    A continous-time process $\{B_t\}t\geq0$ is a standard Brownian motion (BM) if it satisfies the following properties:
+    \begin{enumerate}
+        \item $B_0 = 0$ (starts at time = 0)
+        \item $B_{t+s}-B{s} \sim N(0,t)$, for any $t > 0, s \geq 0$ (\textbf{Stationary increments})
+        \item $B_{t_1}-B_{t_0}, B_{t_2}-B_{t_1}, \cdots, B_{t_n}-B_{t_{n-1}}$ are independent for any $0 \leq t_0 \leq t_1 \leq \cdots \leq t_n$ (\textbf{Independent increments})
+        \item $t \mapsto B_t$ is a continuous finction of t (\textbf{Continuous paths})
+    \end{enumerate}
+\end{definition}
 \end{document}
