@@ -18,7 +18,7 @@
 \newtheorem{terminology}{Terminology}
 \newtheorem{example}{Example}
 
-\setlength{\parskip}{1em}
+\setlength{\parskip}{0em}
 % This gives us a full line break when we write a new paragraph
 
 \begin{document}
@@ -304,4 +304,76 @@ Brownian motion is a stochastic process, which is rooted in a physical phenomeno
         \item $t \mapsto B_t$ is a continuous finction of t (\textbf{Continuous paths})
     \end{enumerate}
 \end{definition}
+
+\subsection{Other closely related processes}
+
+A process $\{X_t\}_t\geq0$ is a \textbf{BM with variance $\sigma ^2$} if it satisfies (1), (3) and (4) but (2) is replaced by $B_{t+s}-B{s} \sim N(0,\sigma ^2t)$, for any $t > 0, s \geq 0$.
+\\
+\\In addition, if (1) is replaced by $X_0 = x$, then we say that X is a \textbf{BM started at x with variance $\sigma^2$}. Note that $X_t = x + \sigma B_t$, where B is a standard BM.
+\\
+\\Unless otherwise stated, a BM refers to a standard Brownian motion.
+
+\begin{remark}
+    \begin{enumerate}
+        \item $B_t \sim N(0,t) \Rightarrow E[B_t] = 0$ and $Var(B_t) = E[B_t^2] = t$
+        \item $B_s$ and $B_{s+t} - B_{s}$ are independent for any $t, s \geq 0$.
+        \item This definition is very similar to that of Poisson process but instead of a Poisson distribution, we have a Gaussian distribution.
+    \end{enumerate}
+\end{remark}
+
+\begin{example}
+    Find the covariance $Cov(B_s, B_t)$, $E[B_sB_t]$ and the correlation $Corr(B_s,B_t)$.
+    \\
+    \\
+    \begin{equation*}
+        \begin{split}
+            E[B_sB_t] & = E[B_s(B_t-B_s+B_s)] \\
+            & = E[B_s(B_t - B_s)] + E[B_s^2] \\
+            & = E[B_s]E[B_t - B_s] + Var(B_s) \\
+            & = s
+        \end{split}
+    \end{equation*}
+    The third equality follows by the independent increment and the last equality is because $E[B_s] = 0$ and $Var(B_s) = s$.
+    
+\end{example}
+
+\subsection{Properties of conditional Brownian motion}
+
+\begin{enumerate}
+    \item $E[B_t|B_s] = E[B_t-B_s+B_s|B_s] = E[B_t-B_s|B_s] + E[B_s|B_s] = E[B_t-B_s] + B_s = 0 + B_s = B_s$
+    \item We want $E[B_t|B_s]$ and $Var(B_t|B_s)$. Note that $B_t$ and $B_s - \frac{s}{t}B_t$ are independent. Since $Cov(B_t, B_s - \frac{s}{t}B_t) = Cov(B_t, B_s) - \frac{s}{t}Cov(B_s,B_t) = s - \frac{s}{t}\times t = 0$
+\end{enumerate}
+
+\subsection{Markov property of BM}
+
+\begin{theorem}
+    BM is a markov process
+    \\
+    \\
+    \begin{math}
+    P(B_{s+t}\leq y | B_s = x) = P(B_{s+t} - B_s \leq y - x | B_s = x)
+    =P(B_{s+t} - B_s \leq y - x)
+    =\Phi (\frac{y-x}{\sqrt{t}})
+    \end{math}
+    \\
+    \\It follows that $B_{s+t}|B_s \sim N(B_s,t)$
+\end{theorem}
+
+\begin{theorem}
+    For any fixed time $s \in (0, \infty)$, TFAE
+    \begin{enumerate}
+        \item $B_{t+s} | B_s \sim N(B_s, t)$
+        \item $B_{t+s} - B_s | B_s \sim N(0,t)$
+        \item $\{B_{t+s}\}_{t\geq 0}$ is a BM independent of $\{B_u\}_{u \leq s}$
+    \end{enumerate}
+\end{theorem}
+
+\subsection{Strong Markov Property and its implication}
+
+Let $a \in \mathbb{R}$ and $T_a = min\{t > 0 | B_t = a\}$. Then $\{B_{t+T_a} - B_{T_a}\}_{t\geq 0}$ is a BM independent of $\{B_u\}_{u\leq 0}$.
+
+\begin{enumerate}
+    \item $P(T_a \leq x)$
+\end{enumerate}
+
 \end{document}
