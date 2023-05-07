@@ -305,7 +305,7 @@ Brownian motion is a stochastic process, which is rooted in a physical phenomeno
     \end{enumerate}
 \end{definition}
 
-\subsection{Other closely related processes}
+\subsubsection{Other closely related processes}
 
 A process $\{X_t\}_t\geq0$ is a \textbf{BM with variance $\sigma ^2$} if it satisfies (1), (3) and (4) but (2) is replaced by $B_{t+s}-B{s} \sim N(0,\sigma ^2t)$, for any $t > 0, s \geq 0$.
 \\
@@ -318,8 +318,25 @@ A process $\{X_t\}_t\geq0$ is a \textbf{BM with variance $\sigma ^2$} if it sati
         \item $B_t \sim N(0,t) \Rightarrow E[B_t] = 0$ and $Var(B_t) = E[B_t^2] = t$
         \item $B_s$ and $B_{s+t} - B_{s}$ are independent for any $t, s \geq 0$.
         \item This definition is very similar to that of Poisson process but instead of a Poisson distribution, we have a Gaussian distribution.
+        \item $B_{s+t} - B_{s} \doteq B_t \doteq \sqrt{t}B_1 \doteq \sqrt{t}Z$, where $Z \sim N(0,1)$ \textbf{Again, they have the same distribution but they are not equal.}
     \end{enumerate}
 \end{remark}
+
+\begin{example}
+    A particle's position is modeled with a standard BM. If the particles is at position 1 at time t = 2, find the probability that its position is at most 3 at time t = 5.
+    \\
+    \\
+    \begin{center}
+        \begin{align*}
+            P(B_5 \leq 3 | B_2 = 1) & = P(B_5 - B_2 \leq 3 - B_2 | B_2 = 1) \\
+            & = P(B_5 - B_2 \leq 2 | B_2 = 1) \\
+            & = P(B_5 - B_2 \leq 2) \\
+            & = P(Z \leq \frac{2}{\sqrt{3}}) \\
+            & = 0.876
+        \end{align*}
+    \end{center}
+    Note the third equality follows by the independence of $B_5-B_2$ and $B_2$. The second last equality follows because $B_5 - B_2 \sim N(0, 5-2)$.
+\end{example}
 
 \begin{example}
     Find the covariance $Cov(B_s, B_t)$, $E[B_sB_t]$ and the correlation $Corr(B_s,B_t)$.
@@ -334,17 +351,74 @@ A process $\{X_t\}_t\geq0$ is a \textbf{BM with variance $\sigma ^2$} if it sati
         \end{split}
     \end{equation*}
     The third equality follows by the independent increment and the last equality is because $E[B_s] = 0$ and $Var(B_s) = s$.
-    
+    \begin{center}
+        \begin{align*}
+            Corr(B_s,B_t) & = \frac{Cor(B_s,B_t)}{\sqrt{Var(B_s}Var(B_t)} \\
+            & = \frac{min\{s,t\}}{\sqrt{st}}
+        \end{align*}
+    \end{center}
 \end{example}
 
-\subsection{Properties of conditional Brownian motion}
+\begin{example}
+    Find the distribution of $B_s + B_t$.
+    \begin{center}
+        Assume s $\leq$ t. We have $B_s + B_t = 2B_s + (B_t - B_s) \doteq N(0,3s+t)$.
+    \end{center}
+    The equality follows because $2B_s \sim N(0,4s)$ and $B_t - B_s \sim N(0,t-s)$.
+\end{example}
+
+\subsubsection{Gaussian Process}
+
+\begin{theorem}
+    The standard BM $\{B_t\}_{t\geq 0}$ is such that, \textbf{for any sequence of constant times $0 < t_1 < \dots < t_n$, and any constant $a_1, \dots, a_n \in \mathbb{R}$, $a_1B_{t_1}+\dots +a_nB_{t_n}$ is normally distributed.}
+    Equivalently, for any $t_1 < t_2 < \dots < t_n$, $(B_{t_1}, \dots, B_{t_n})$ are jointly normally distributed (or has a multivariate normal distribution).
+\end{theorem}
+
+\begin{definition}
+    A process satisfying the above theorem is called a \textbf{Gaussian Process}.
+\end{definition}
+
+\begin{theorem}
+    A process $\{B_t\}_{t\geq 0}$ is a standard BM if and only if it is a Gaussian process with the following properties:
+    \begin{enumerate}
+        \item $B_0 = 0$
+        \item $E[B_t]=0$, $\forall t$ \textbf{(mean function)}
+        \item $Cov(B_s,B_t)=min\{s,t\}$ \textbf{(covariance function)}
+        \item $t \mapsto B_t$ is continuous
+    \end{enumerate}
+\end{theorem}
+
+\begin{example}
+    Compute $P(B_{1.5}-2B_2+B_3 > 2)$.
+    \\
+    \\
+    Since we already know that $B_{1.5}-2B_2+B_3$ is normally distributed, we only need to find its mean and variance. Denote $Y := B_{1.5}-2B_2+B_3$. Note that we have $E[Y] = 0$ and $Var(Y) = Var(B_{1.5}) + 4Var(B_2) + Var(B_3) - 4Cov(B_{1.5},B_2) + 2Cov(B_{1.5},3) - 4Cov(B_2,B_3) = 1.5$ Then, $P(Y) = 1 - \Phi(\frac{2}{\sqrt{1.5}})$.
+\end{example}
+
+\subsubsection{Conditional Brownian Motion}
+
+\begin{theorem}
+    For any $0 < t < u$,
+    \begin{enumerate}
+        \item $B_u | B_t \sim N(B_t,(u-t))$
+        \item $B_t | B_u \sim N(\frac{t}{u}B_u, \frac{t(u-t)}{u})$
+    \end{enumerate}
+\end{theorem}
+
+\begin{remark}
+    Both conditional properties in the previous theorem have stronger versions. Broadly, for any $0 \leq t < u$,
+    \begin{enumerate}
+        \item $B_u| \{B_s\}_{s\leq t} \sim N(B_t, u-t )$
+        \item $B_t | \{B_s\}_{s\leq t} \sim N(\frac{t}{u}B_u, \frac{t(u-t)}{u})$
+    \end{enumerate}
+\end{remark}
+
+\noindent Some ideas are as follows:
 
 \begin{enumerate}
     \item $E[B_t|B_s] = E[B_t-B_s+B_s|B_s] = E[B_t-B_s|B_s] + E[B_s|B_s] = E[B_t-B_s] + B_s = 0 + B_s = B_s$
     \item We want $E[B_t|B_s]$ and $Var(B_t|B_s)$. Note that $B_t$ and $B_s - \frac{s}{t}B_t$ are independent. Since $Cov(B_t, B_s - \frac{s}{t}B_t) = Cov(B_t, B_s) - \frac{s}{t}Cov(B_s,B_t) = s - \frac{s}{t}\times t = 0$
 \end{enumerate}
-
-\subsection{Markov property of BM}
 
 \begin{theorem}
     BM is a markov process
@@ -368,12 +442,465 @@ A process $\{X_t\}_t\geq0$ is a \textbf{BM with variance $\sigma ^2$} if it sati
     \end{enumerate}
 \end{theorem}
 
-\subsection{Strong Markov Property and its implication}
+\subsection{Markov property of Brownian Motion}
 
-Let $a \in \mathbb{R}$ and $T_a = min\{t > 0 | B_t = a\}$. Then $\{B_{t+T_a} - B_{T_a}\}_{t\geq 0}$ is a BM independent of $\{B_u\}_{u\leq 0}$.
+We already saw a version of the markov property for a B.M. $\{B_t\}_{t\geq 0}$: For any $s, t \geq 0$, $B_{s+t}|B_s \sim N(B_s,t)$.
+\\
+\\
+We can write this in the following way:
+$P(B_{s+t}\leq y | B_v, v\leq s) = P(B_{s+t} \leq y | B_s) =\Phi (\frac{y-B_s}{\sqrt{t}})$ This equality means that, for any $0 \leq t_1 < \dots < t_n = s$, $P(B_{s+t} \leq y | B_s, B_{t_{n-1}}\cdots B_{t_1}) = P(B_{s+t} \leq y | B_s)$ which now looks almost the same as the Markov Property for CTMC.
+
+\subsubsection{Simple Markov Property}
+
+\begin{theorem}
+    \textbf{(Simple Markov Property)} For any fixed time $s > 0$, the process $\{B_{s+t} - B_s\}_{t\geq 0}$ is a standard BM and this is also independent of the path or history of BM up to time s, $\{B_u\}_{0\leq u \leq s}$.
+\end{theorem}
+
+\noindent Therefore, not only $B_{t+s} - B_s \sim N(0,t)$, independent of $\{B_u\}_{u \leq s}$, but furthermore, the whole path $\{B_{t+s} - B_s\}_{t\geq 0}$ is a standard B.M., independent of $\{B_u\}_{u \leq s}$.
+\\
+\\
+\noindent Thus, e.g., for any $t_1 < t_2 < \cdots < t_n$ and $s_1 < s_2 < \cdots < s_m < s$, we have
+\begin{align*}
+    & P(B_{t_1} - B_s \leq x_1, \cdots, B_{t_n} - B_s \leq x_n| B_s, B_{s_1}, \cdots, B_{s_m})\\
+    = & P(B_{t_1}\leq x_1, \cdots, B_{t_n}\leq x_n)
+\end{align*}
+We can further show that s can be replace with a random time satisfying certain conditions. The most important case is when s is replace with a "hitting time"
+\begin{definition}
+    $T_a = min\{ t > 0: B_t = a\}$ for $a \in \mathbb{R}$.
+\end{definition}
+
+\subsubsection{Strong Markov Property for Hitting Time}
+
+Let $a \in \mathbb{R}$ and $T_a = min\{t > 0 | B_t = a\}$. Then the translated B.M. $\{B_{t+T_a} - B_{T_a}\}_{t\geq 0}$ is a BM independent of $\{B_u\}_{u\leq T_a}$. It means that the translated B.M. starts from $(T_a, a)$, i.e. we move the origin to $(T_a, a)$ and restarts everything, while the past history can't affect the future motion.
+
+\begin{theorem}
+    Note that we have $P(T_a < t) = 2P(B_t > a) = 2(1-\Phi(\frac{a}{\sqrt{t}}))$.
+    \\In particular, the pdf of $T_a$ is given by $f_{T_a}(t)=\frac{a}{\sqrt{2\pi t^3}}e^{-\frac{a^2}{2t}}$, for $t > 0$.
+\end{theorem}
+
+\begin{remark}
+    The strong Markov property is used to find the distribution of $T_a$. Consider standard Brownian motion. At any time t, $B_t$ is equally likely to be above or below the line $y = 0$. Assume that $a > 0$. For Brownian motion started at $a$, the process is equally likely to be above or below the line $y = a$. This gives, $P(B_t > a | T_a < t) = \frac{1}{2}$. 
+\end{remark}
+
+\begin{example}
+    A particle moves according to Brownian motion started at $x = 1$. After $t = 3$ hours, the particle is at level 1.5. Find the probability that the particle reaches level 2 sometimes in the next hour.
+\end{example}
+
+\noindent For $t \geq 3$, the translated process is a Brownian motion started at $x = 1.5$. The event that the translated process reaches level 2 in the next hour, is equal to the event that a standard Brownian motion first hits level $a = 2 - 1.5 = 0.5$ in $[0, 1]$. The desired probability is:
+\begin{center}
+    \begin{align*}
+        P(max\{1+B_u\} \geq 2, 3 \leq u \leq 4 | 1 + B_3 = 1.5) & = P(max\{B_u - B_3\} \geq 0.5 | B_3 = 0.5) \\
+        & = P(B_{3+t} - B_3 \geq 0.5, t \leq 1)\\
+        & = P(B_t \geq 0.5, t \leq 1) \\
+        & = P(T_{0.5} < 1)
+    \end{align*}
+\end{center}
+
+\noindent Note that $1 + B_u$ means the B.M. started at 1. We subtract $1 + B_3 = 1.5$ from $max\{1+B_u\} \geq 2, 3 \leq u \leq 4$ in first equality. Then we use simple markov property in the second and third equality. By the above theorem, $P(T_{0.5} < 1) = 2(1 - \Phi(\frac{1}{2})) = 0.617$.
+
+\begin{example}
+    A laboratory instrument takes annual temperature measurements. Measurement errors are assumed to be independent and normally distributed. As precision decreases over time, errors are modeled as standard Brownian motion. For how many years can the lab be guaranteed that there is at least 90\% probability that all errors are less than 4 degrees?
+\end{example}
+
+\noindent The problem asks for the largest t such that $P(M_t \leq 4) \geq 0.90$. We have
+\begin{center}
+    $0.90 \leq P(M_t \leq 4) = 1 - P(M_t > 4) = 1 - 2P(B_t > 4) = 2P(B_t \leq 4) - 1$.
+\end{center}
+This gives $0.95 \leq P(B_t \leq 4) = P(Z \leq \frac{4}{\sqrt{t}})$,
+where Z is a standard normal random variable. The 95th percentile of the standard normal distribution is 1.645. Solving $4/\sqrt{t}=1.645$ gives
+\begin{center}
+    $t = (\frac{4}{1.645})^2 = 5.91$ years.
+\end{center}
+
+\subsubsection{Zeros of Brownian Motion}
+
+\begin{theorem}
+    For $0 \leq r < t$, let $z_{r,t}$ be the probability that standard Brownian motion has at least one zero in $(r,t)$. Then,
+    \begin{center}
+        $z_{r,t}=\frac{2}{\pi}arccos(\sqrt{\frac{r}{t}})$
+    \end{center}
+\end{theorem}
+
+\noindent This is probably be tested in the exam paper so I also include the proof here.
+\\
+\noindent Assume that $B_r = x < 0$. The probability that $B_s = 0$ for some $s \in (r,t)$ is equal to the probability that for the process started in $x$, the maximum on $(0, t-r)$ is greater than 0. By translation, the latter is equal to the probability that for the process started in 0, the maximum on $(0, t-r)$ is greater than $|x|$. That is,
+\begin{center}
+    $P(B_s = 0$ for some s $\in (r,t)|B_r = x) = P(M_{t-r}>|x|)$ 
+\end{center}
+\noindent For $x > 0$, consider the reflected process $-B_s$ started in $-x$. In either case,
+\begin{center}
+    \begin{align*}
+        z_{r,t} & = \int_{-\infty }^{\infty} P(M_{t-r}>|x|)\frac{1}{\sqrt{2\pi r} }e^{-x^2/2r}dx \\
+        & = \int_{-\infty }^{\infty}\int_{0}^{t-r}  \frac{|x|e^{-x^2/2s}}{\sqrt{2\pi s^3}} ds\frac{1}{\sqrt{2\pi r} }e^{-x^2/2r}dx \\
+        & = \frac{1}{\pi} \int_{0}^{t-r}  \frac{1}{\sqrt{rs^3}}\int_{0}^{\infty}xe^{-x^2(r+s)/2rs}dxds \\
+        & = \frac{1}{\pi} \int_{0}^{t-r}\frac{1}{\sqrt{rs^3}} \int_{0}^{\infty}e^{-z(r+s)/rs}dzds \\
+        & = \frac{1}{\pi} \int_{0}^{t-r}\frac{1}{\sqrt{rs^3}}\frac{rs}{r+s}ds \\
+        & = \frac{1}{\pi} \int_{r/t}^{1}\frac{1}{\sqrt{x(1-x)}}dx \\
+        & = \frac{2}{\pi}(arcsin(\sqrt{1})-arcsin(\sqrt{r/t})))\\
+        & = \frac{2}{\pi}arccos(\sqrt{\frac{r}{t}})\\
+    \end{align*}
+\end{center}
+
+\subsubsection{Last Zero Standing}
+
+\begin{theorem}
+Let $L_t$ be the last zero in $(0,t)$. Then,
+\begin{center}
+    $P(L_t\leq x) = \frac{2}{\pi}arcsin(\sqrt{\frac{x}{t}})$, for $0 < x < t$.
+\end{center}
+\end{theorem}
+
+\begin{remark}
+    The density of $L_t$ is called arc-sine density and is given by:
+    \begin{center}
+        $f_{L_t}(x)=\frac{\mathrm{d} P(L_t \leq x)}{\mathrm{d} x} = \frac{\mathrm{d} }{\mathrm{d} x} (\frac{2}{\pi}arcsin(\sqrt{\frac{x}{t}})) = \frac{\sqrt{t}}{\pi \sqrt{x(t-x)}}$, $x \in (0,t)$.
+    \end{center}
+\end{remark}
+
+\subsubsection{The Reflection Trick or Principle}
+This is another way to look into the identity $P(T_a < t) = 2P(B_t > a)$. Consider a path that hits level a before time t. Reflect the path after the hitting time $T_a$ and consider the resulting process $\tilde{B}$:
+\begin{center}
+    $\tilde{B} = \begin{cases}
+  B_t &\text{ if } 0 \leq t \leq T_a \\
+  2a - B_t &\text{ if } t \geq T_a \end{cases}$
+\end{center}
+\noindent Intuitively, for every path of B that hits $a$ before t and ends up above $a$ at time t, there is one path that hits $a$ before $t$ and ends up below $a$ at time $t$, and vice versa. So, it makes sense that
+\begin{center}
+    $P(T_a < t, B_t > a) = P(T_a < t, B_t < a)$
+\end{center}
+\noindent Finally, we have the following:
+\begin{center}
+    \begin{align*}
+        P(T_a < t) & = P(T_a < t, B_t > a) + P(T_a < t, B_t < a)\\
+        & = 2P(T_a < t, B_t > a) \\
+        & = 2P(B_t > a)
+    \end{align*}
+\end{center}
+\noindent Note that the second equality follows by $\{B_t > a\} \subseteq \{T_a < t\}$.
+
+\subsubsection{Hitting Time applications summary}
 
 \begin{enumerate}
-    \item $P(T_a \leq x)$
+    \item Different versions of the Reflection Principle:
+    \begin{enumerate}
+        \item $a > 0:$
+            $P(max_{s \leq t}\{B_s \geq a\}) = 2 P(B_t \geq a)
+            = P(T_a \leq t)$, where $T_a = inf\{t \geq 0: B_t = a\}$
+        \item $\max_{s\leq t} B_s \doteq  |B_t|$
+        \item $P(T_a < t, B_t > a) = P(T_a < t, B_t < a)$
+    \end{enumerate}
+    \item Zeros of B.M
+    \\
+    \\For $0 \leq r < t$, $P(B_s = 0, s\in (r,t)) = \frac{2}{\pi}arccos(\sqrt{\frac{r}{t}})$
+    \item Last Zero Standing
+    \\
+    \\$L_t = max\{0 \leq s \leq t: B_s = 0\}$
+    \\
+    \\$P(L_t \leq x) = \frac{2}{\pi}arcsin(\sqrt{\frac{x}{t}}), 0 < x < t$
 \end{enumerate}
+
+\subsubsection{Geometric Brownian Motion}
+
+\begin{definition}
+    Let $\{X_t\}_{t\geq0}$ be a Brownian motion with drift parameter $\mu$ and variance parameter $\sigma^2$. The process $\{G_t\}_{t\geq0}$ defined by $G_t = G_0 e^{X_t}$ for $t \geq 0$, where $G_0 > 0$, is called geometric Brownian motion.
+\end{definition}
+
+\begin{remark}
+    \begin{enumerate}
+        \item $E[G_t] = G_0e^{t(\mu+\sigma^2/2)}$
+        \item $Var(G_t) = G_0^2e^{2t(\mu+\sigma^2/2)}(e^{t\sigma^2}-1)$
+        \item $E[ln(G_t)] = ln(G_0) +\mu t$
+        \item $Var(ln(G_t)) = \sigma^2 t$
+    \end{enumerate}
+\end{remark}
+
+
+\subsection{Brownian Martingales}
+The term martingale comes from the theory of game of chance and means a "fair" game where it is equally likely to win or lose in each bet.
+\\
+\\Roughly, a martingale is a process whose future value tend to remain constant even if the part history or path of the process is known.
+
+\subsubsection{Introduction to Martingales}
+
+\begin{definition}
+    A process $\{X_t\}_{t \in \tau}$ (in discrete or continuous time) with time indices $\tau$ is a martingale if
+    \begin{enumerate}
+        \item $E[|X_t|] < \infty$, for all $t \in \tau$,
+        \item $E[X_t | X_u, u \leq s] = X_s$, for any $s < t (s,t \in \tau)$.
+    \end{enumerate}
+\end{definition}
+
+\begin{remark}
+    Condition 2 is equivalent to the following (which is usually how we check it):
+    \\
+    \\ For any "past" times $u_1 < u_2 < \cdots < u_m < s$,
+    \begin{center}
+        $E[X_t | X_s, X_{u_1}, \cdots, X_{u_m}] = X_s$.
+    \end{center}
+    \noindent In discrete-time $\tau = {0,1,2, \cdots}$, condition 2 is equivalent to
+    \begin{center}
+        $E[X_{n+1}|X_n,X_{n-1}, \cdots, X_0] = X_n$, for any $n = 0,1, \cdots$
+    \end{center}
+\end{remark}
+
+\begin{example}
+    \textbf{(Brownian motion)} We saw that $E[B_t | B_u, u \leq s] = B_s$
+\end{example}
+
+\begin{example}
+    \textbf{(Symmetric Random Walks)} $X_t =  {\textstyle \sum_{i=1}^{t}} Y_i$, $t \in \tau = \mathbb{N} = \{0, 1, \cdots \}$, where $Y_i$ are i.i.d with $P(Y_i = \pm 1) = \frac{1}{2}$.
+\end{example}
+
+\begin{example}
+    \textbf{(Compensated Poisson Process)} $X_t = N_t - \lambda t$, where $\{N_t\}$ is a Poisson process with intensity $\lambda$.
+\end{example}
+
+\subsubsection{Generalized Martingales}
+
+\begin{definition}
+    We say that a process $\{X_t\}_{t \in \tau}$ is a martingale with respect to another process $\{Y_t\}_{t \in \tau}$ if
+    \begin{enumerate}
+        \item $E[|X_t|] < \infty$, for all $t \in \tau$,
+        \item $E[X_t | Y_u, u \leq s] = X_s$, for any $s < t (s,t \in \tau)$.
+    \end{enumerate}
+\end{definition}
+
+\noindent To understand martingales, we can imagine it is a line with some variations in different time. But for long enough time, we can see the line as a constant line. For example, if we have 100 dollars before we enter casino, we are expected to have 100 dollars when we leave. Note the value we are talking here is the expectation but not the exact value. To better understand and use of martingales, readers are recommend to take measure theory.
+
+\begin{example}
+    Let $X_t = B^2_t - t$. Then, $\{X_t\}_{t \geq 0}$ is a martingale with respect to $\{B_t\}_{t \geq 0}$.
+\end{example}
+
+\noindent The following gives a whole class of martingales related to Brownian motion.
+\begin{theorem}
+    \textbf{Heat Equation}
+    \\If $u(t,x): [0, \infty) \times \mathbb{R} \mapsto \mathbb{R}$ is smooth such that 
+    \begin{center}
+        $\frac{\partial u}{\partial t} + \frac{1}{2} \frac{\partial^2 u}{\partial x^2} = 0$
+    \end{center}
+    \noindent then $X_t = u(t, B_t)$ is a martingale w.r.t B.
+\end{theorem}
+
+\subsubsection{Key Property of Martingales}
+
+The most important property of martingales is that the expectation is constant if no effective information is given. i.e. we can conclude the following result:
+\begin{center}
+    $E[X_t] = E[X_0]$, for any $t \in \tau$
+\end{center}
+
+\begin{example}
+    Using the property above with the martingale $X_t = e^{\sigma B_t - \frac{\sigma^2}{2}t}$, compute $E[e^{\sigma B_t}]$.
+\end{example}
+
+\noindent By property, we have $E[e^{\sigma B_t - \frac{\sigma^2}{2}t}] = E[e^{\sigma B_0 - \frac{\sigma^2}{2}0}] = 1$. But the LHS is just $E[e^{\sigma B_t}]e^{\frac{-\sigma^2}{2}t}$. Then, $E[e^{\sigma B_t}] = e^{\frac{\sigma^2}{2}t}$
+
+\subsubsection{Optional Stopping Theorem}
+
+The following is one of the main theorem related to martingales.
+\begin{theorem}
+    \textbf{(Optional Stopping Theorem)}
+    \\Let $\{X_t\}_{t \geq 0}$ be a martingale with respect to a stochastic process $\{Y_t\}_{t \geq 0}$. Assume that T is a stopping time for $\{Y_t\}_{t \geq 0}$. Then, $E[X_T] = E[X_0]$ if one of the followings are satisfied.
+    \begin{enumerate}
+        \item T is bounded. That is, $T \leq c$ for some constant $c$.
+        \item $P(T < \infty) = 1$ and $E[|X_t|] \leq c$, for some constant $c$, whenever $T > t$.
+    \end{enumerate}
+\end{theorem}
+
+\begin{remark}
+    In discrete-time, we also have $E[X_T] = E[X_0]$ where T takes values on $\tau = \{0,1, \cdots\}$ and the property of 'stopping time' reduces to asking that, for any n, the event $\{T = n\}$ depends on $Y_0, Y_1, \cdots, Y_n$.
+    \\
+    \\The most important type of stopping time is a hitting time $T_a$ and its combinations: $min\{T_a, T_b\}$, $max\{T_a, T_b\}$, etc.
+\end{remark}
+
+\begin{example}
+    Let $a, b > 0$. For a standard Brownian motion, find the probability that the process hits level $a$ before hitting level $-b$.
+\end{example}
+
+\noindent Let $p$ be the desired probability. Consider the time $T$ that Brownian motion first hits either $a$ or $-b$. That is, $T = min\{t: B_t = a $ or $ B_t = -b\}$. Observe that $B_T = a$, with probability $p$, and $B_t = -b$, with probability $1 - p$. By the optional stopping theorem, (applied to the martingale $X_t = B_t$)
+\begin{center}
+    $0 = E[B_0] = E[B_T] = pa + (1-p)(-b)$.
+\end{center}
+Solving for $p$ gives $p = \frac{b}{a+b}$.
+
+\begin{example}
+    \textbf{(Expected hitting time)}
+    \\Apply the optional stopping theorem with the same stopping time as in the previous example, but with the quadrtic martingale $B_t^2 - t$. This gives
+    \begin{center}
+        $E[B_T^2 - T] = E[B^2_0 - 0] = 0$,
+    \end{center}
+    from which it follows that
+    \begin{center}
+        $E[T] = E[B_T^2] = a^2\frac{b}{a+b} + b^2\frac{a}{a+b} = ab$
+    \end{center}
+    Note that
+    \begin{center}
+        $B_t = \begin{cases}
+          a & \text{ with probability } p = \frac{a}{a+b}\\
+          -b & \text{ with probability } 1 - p = \frac{b}{a+b}
+        \end{cases}$
+    \end{center}
+    We have thus discovered that the expected time that standard Brownian motion first hits the boundary of the region defined by the lines $y = a$ and $y = -b$ is $ab$.
+\end{example}
+
+\subsection{Revision Examples}
+
+\begin{example}
+    A facility has four machines, with two repair workers to maintain them. Individual machines fail on average every 10 hours. It takes an individual repair worker on average 4 hours to fix a machine. Repair and failure times are independent and exponentially distributed. Let $X_t \in \{0, 1, 2, 3, 4\}$ be the number of machines working at time t.
+    \begin{enumerate}
+        \item Describe the duration time the chain X stays on each state and the transition probabilities of jumping from each state to other.
+        \item Find the generator matrix Q of the chain.
+        \item Find the stationary distribution.
+        \item In the long term, how many machines are typically operational?
+        \item If all four machines are initially working, find the probability that only two machines are working after 5 hours.
+    \end{enumerate}
+\end{example}
+
+\noindent Though not explicitly said, as customary, all times involves in this problem are independent and exponentially distributed. Suppose at time 0, $X_0 = 0$ (none of the machines are working ). The chain will move from 0 to 1 machine working when one of the two repairmen finish. This time is the minimum of the two repair times, so exponential with rate $\lambda_0 = \frac{1}{4} + \frac{1}{4} = \frac{1}{2}$.
+\\
+\\Suppose there are only one machine working. The chain will remain there until
+$T_1 = min\{T_{R_1}, T_{R_2}, T_F\} \sim exp(\lambda_1 = \frac{1}{4} + \frac{1}{4} + \frac{1}{10})$, where $T_{R_i} = $ time it takes repairman i to finish and $T_F = $ time it takes for the working machine to fail. Then, the chain jumps to 2 with probability
+\begin{center}
+    $r(1,2) = P(min\{T_1, T_2\} < T_F) = \frac{2/4}{2/4 + 1/10} = \frac{5}{6}$
+\end{center}
+or jumps to 0 with probability
+\begin{center}
+    $r(1,0) = P(T_F < min\{T_1, T_2\}) = \frac{1/10}{2/4 + 1/10} = \frac{1}{6}$.
+\end{center}
+
+\noindent Suppose there are two machines working. The chain will remain there until $T_2 = min\{T_{R_1}, T_{R_2}, T_{F_1}, T_{F_2} \} \sim expo(\lambda_2 = \frac{2}{4} + \frac{2}{10})$. Then, the chain jumps to 3 with probability
+
+\begin{center}
+    $r(2,3) = P(min\{T_{R_1}, T_{R_2}\} < min\{T_{F_1}, T_{F_2}\}) = \frac{2/4}{2/4 + 2/10} = \frac{5}{7}$
+\end{center}
+or jumps to 1 with probability
+\begin{center}
+    $r(2,1) = P(min\{T_{R_1}, T_{R_2}\} > min\{T_{F_1}, T_{F_2}\}) = \frac{2/10}{2/4 + 2/10} = \frac{2}{7}$
+\end{center}
+
+\noindent Suppose there are three machines working. The chain will remain there until $T_3 = min\{T_{R_1}, T_{F_1}, T_{F_2}, T_{F_3}\} \sim exp(\lambda_3 = \frac{1}{4} + \frac{3}{10})$. Then, the chain jumps to 4 with probability
+\begin{center}
+    $r(3,4) = P(T_{R_1} < min\{T_{F_1}, T_{F_2}, T_{F_3}\}) = \frac{1/4}{1/4 + 3/10} = \frac{5}{11}$
+\end{center}
+or jumps to 2 with probability
+\begin{center}
+    $r(3,2) = P(T_{R_1} > min\{T_{F_1}, T_{F_2}, T_{F_3}\}) = \frac{3/10}{1/4 + 3/10} = \frac{6}{11}$
+\end{center}
+
+\noindent Suppose there are four machines working. The chain will remain there until $T_4 = min\{T_{F_1}, T_{F_2}, T_{F_3}, T_{F_4}\} \sim exp(\lambda_4 = \frac{4}{10})$
+\\
+\\
+Note that $\lambda_0 = \frac{1}{2}$, $\lambda_1 = \frac{3}{5}, \lambda_2 = \frac{7}{10}, \lambda_3 = \frac{11}{20}, \lambda_4 = \frac{2}{5}$. Hence, e.g. $q(1,2) = r(1,2) \lambda_1 = \frac{5}{6}\frac{3}{5} = \frac{1}{2}$.
+\\
+\\
+Solve $\pi Q = 0$ gives the stationary distribution. The long-term expected number of working machines is $0\pi_0 + 1\pi_1 + 2\pi_2 + 3\pi_3 + 4\pi_4 = 2.76$. The desired probability for part 5 $= P_{42}(5) = (e^{5Q})_{42} = 0.188$.
+
+\begin{example}
+    During lunch hour, customers arrive at a fast-food restaurant at the rate of 120 customers per hour. The restaurant has one line, with three workers taking food orders at independent service stations. Each worker takes an exponentially distributed amount of time on average 1 minute to service a customer. Let $X_t$ denote the number of customers in the restaurant (in line and being serviced) at time t. The process $\{X_t\}_{t \geq 0}$ is a continuous-time Markov Chain. Exhibit the generator matrix.
+    \\
+    \\Assume now that customers are turn away from the store if all three service stations are busy. Let $Y_t$ denote the number of service stations busy at time t. Then, $\{Y_t\}_{t \geq 0}$ is a continuous-time Markov chain. Exhibit the generator matrix.
+\end{example}
+
+\noindent For the first question, note that the state space is $\mathbb{N}$. We start from 0 customer. Note that the average number of customer per minute is 2 so the time we stay in 0 customer is exponentially distributed with rate $\lambda_0 = 2$.
+\\
+\\ Suppose there is 1 customer. Then we either have 2 customers or we have 0 customer. First, we consider how long we will stay in 1 customer. Note that $T_1 = min\{T_{S_1}, T_{C_2}\} \sim exp(\lambda_1 = 1 + 2 = 3)$, where $T_{S_1} = $ time to service customer 1, $T_{C_2} = $ time for customer 2 come. Then, the chain jumps to 2 with probability
+\begin{center}
+    $r(1,2) = P(T_{C_2} = T_1) = \frac{2}{1+2} = \frac{2}{3}$
+\end{center}
+or jumps to 0 with probability
+\begin{center}
+    $r(1,0) = P(T_{S_1} = T_1) = \frac{1}{1+2} = \frac{1}{3}$
+\end{center}
+\noindent Note that $q(1,2) = r(1,2)\lambda_1 = 2$ and $q(1,0) = r(1,0)\lambda_1 = 1$
+\\
+\\ Suppose there are 2 customers. Let skip the detail and we have $\lambda_2 = min\{T_{S_1}, T_{S_2}, T_{C_3} \} = 1 + 1 + 2 = 4$
+\begin{center}
+    $r(2,3) = P(T_{C_3} = T_2) = \frac{2}{4} = \frac{1}{2}$
+    $r(2,1) = P(T_{S} = T_2) = \frac{1+1}{4} = \frac{1}{2}$
+\end{center}
+\noindent Hence, we have $q(2,3) = r(2,3)\lambda_2 = 2$ and $q(2,1) = r(2,1)\lambda_2 = 2$
+\\
+\\ Suppose there are 3 customers. Similarly, $\lambda_3 = 1 + 1 + 1 + 2 = 5$ and we have
+\begin{center}
+    $r(3,4) = P(T_{C_4} = T_2) = \frac{2}{5}$
+    $r(3,2) = P(T_{S} = T_2) = \frac{1+1+1}{5} = \frac{3}{5}$
+\end{center}
+\noindent Hence, we have $q(3,4) = r(3,4)\lambda_3 = 2$ and $q(2,1) = r(3,2)\lambda_3 = 3$. And forward and repeat the same process.
+\\
+\\While for the second question, we restrict our state space to be $\{0, 1, 2, 3\}$. Actually, we only need to modify if there are 3 customers as we cannot jump to 4 customers. Hence, $\lambda_3 = 1 + 1 + 1 = 3$ and $q(3,2) = 3$.
+
+\begin{example}
+    Let $X_t$ be a standard Brownian motion on the real line. Answer the following questions.
+    \begin{enumerate}
+        \item What is the probability $P(X_3 \geq 1)$?
+        \item What is the probability $P(X_3 \geq X_1 + 1)$?
+        \item Find the mean and variance of $\int_{0}^{1} X_t dt$. Hint: Assume that expectation and integration can be interchanged (which is indeed true). For the variance, note that $(\int_{0}^{1} X_t dt)^2 = \int_{0}^{1} \int_{0}^{1} X_t X_s dt ds$.
+    \end{enumerate}
+\end{example}
+
+\noindent Note that $X_3 \sim N(0,3)$ and hence $P(X_3 \geq 1) = 1 - \Phi(\frac{1}{\sqrt{3}}) = 0.282$.
+\\
+\\Note that $P(X_3 \geq X_1 + 1) = P(X_3 - X_1 \geq 1) = P(X_2 \geq 1)$ by Markov property and $P(X_2 \geq 1) = 1 - \Phi(\frac{1}{\sqrt{2}}) = 0.240$.
+\\
+\\Use the fact that $E[X_t] = 0$. Note that $E\left [ \int_{0}^{1} X_t dt \right ] = \int_{0}^{1} E[X_t]dt=\int_{0}^{1}0dt=0$. Moreover, recall that $Cov(X_s,X_t) = E(X_sX_t)=min\{s,t\}$. We have
+\begin{center}
+    \begin{align*}
+        Var\left ( \int_{0}^{1} X_tdt  \right ) & = E\left [ \left ( \int_{0}^{1} X_t dt \right ) ^ 2\right] \\
+        & = E \left[ \int_{0}^{1} \int_{0}^{1} X_t X_s dt ds \right] \\
+        & = \int_{0}^{1} \int_{0}^{1} E[X_tX_s] dt ds \\
+        & = \int_{0}^{1} \int_{0}^{1} min\{s,t\} dt ds \\
+        & = \frac{1}{3}
+    \end{align*}
+\end{center}
+
+\begin{example}
+    Let $X$ be a CTMC with infinitesimal generator:
+    \begin{center}
+        $Q = \begin{bmatrix}
+         -1 & 1 & 0\\
+         1 & -2 & 1\\
+         0 & 1 & -1
+        \end{bmatrix}$
+    \end{center}
+    \begin{enumerate}
+        \item Give an explicit formula for the transition matrix $P_t$ by the eigendecomposition $Q = UDU^{-1}$.
+        \item Compute the stationary distribution $\pi$ of the chain.
+        \item Find the transition probabilities for the embedded DTMC, and compute the stationary distribution for the embedded DTMC.
+    \end{enumerate}
+\end{example}
+
+\noindent For the first and second question, $P_t = e^{Qt} = U(e^{Dt})U^{-1}$ and the stationary distribution can be obtained from the first row of the $U^{-1}$ matrix. So, It gives us $\pi = (1/3, 1/3, 1/3)$.
+\\
+\\Recall that the routing probabilities $r(i,j)$ of the embedded Markov chain are $r(i,j) = q(i,j)/\lambda_j$. Then, the transition matrix of the embedded Markov chain is
+$\begin{bmatrix}
+     0 & 1 & 0\\
+     1/2 & 0 & 1/2\\
+     0 & 1 & 0
+\end{bmatrix}$.
+
+\begin{example}
+    Let $\{B_t\}_{t \geq 0}$ be a standard Brownian motion. Show that, for any $\lambda > 0$, $X_t = e^{\lambda B_t - \frac{1}{2}\lambda ^2 t}$ satisfies the definition of martingale with respect to the Brownian motion.
+\end{example}
+
+\noindent We just need to show $X_t$ satisfy the definition of martingale, i.e. $E[X_t | B_u, u \leq s] = X_s$.
+\begin{center}
+    \begin{align*}
+        E[X_t| B_u, u \leq s] & = E[e^{\lambda B_t - \frac{1}{2}\lambda ^2 t} | B_u, u \leq s] \\
+        & = e^{-\frac{\lambda^2 t}{2}t} E[e^{\lambda B_t} | B_u, u \leq s] \\
+        & = e^{-\frac{\lambda^2 t}{2}t} e^{\lambda B_s + \frac{1}{2}\lambda ^2 (t - s)} \\
+        & = e^{\lambda B_s - \frac{1}{2}\lambda ^2 s} \\
+        & = X_s
+    \end{align*}
+\end{center}
+While we use that $B_t | B_u, u \leq s \sim N(B_s, t - s)$ and $E[e^{\lambda N(\mu,v)}] = e^{\lambda \mu + \frac{\lambda ^2}{2}v}$, it follows that $E[e^{\lambda B_t} | B_u, u \leq s] = e^{\lambda B_s + \frac{1}{2}\lambda ^2 (t - s)}$
+
+\begin{example}
+    Consider a standard Brownian motion started at $x = -3$.
+    \begin{enumerate}
+        \item Find the probability of reaching the level 2 before level -7.
+        \item When, on average, will the process leave the region between lines $y = 2$ and $y = -7$?
+    \end{enumerate}
+\end{example}
+
+\noindent By translation, the required probability $= P(B_t )$
 
 \end{document}
