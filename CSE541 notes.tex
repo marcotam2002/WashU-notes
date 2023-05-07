@@ -15,6 +15,14 @@
 \usepackage{fullpage}
 % By default, an article has some vary large margins to fit the smaller page format.  This allows us to use more standard margins.
 
+
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem*{remark}{Remark}
+\newtheorem{terminology}{Terminology}
+\newtheorem{example}{Example}
+
 \setlength{\parskip}{0em}
 % This gives us a full line break when we write a new paragraph
 
@@ -52,6 +60,8 @@ Our first goal:
     \item Recursion tree
     \item Master method
     \item Dynamic programming
+    \item Use ILP, SAT solver
+    \item FPT, using Predictions
 \end{enumerate}
 
 \subsection{Lower bound}
@@ -77,25 +87,279 @@ Our first goal:
     \item Oracles, $P^{NP}$ and $\bigtriangleup _2^p$
 \end{enumerate}
 
-\section{NP-completeness} 
+\section{NP-completeness}
+
+\subsection{Reduction}
+
+When we reduce A to B, we are saying "if I could solve B in some models, then I could solve A in that model as well". It follows that B is at least as hard as A but A maybe easier. Hence we have A reduces to B $\Leftrightarrow A \leq_p B$ $\Leftrightarrow$ B is at least as hard as A.
+
+\subsection{Definition of NP, NPC and NPI}
 
 P, NP, NP-Hard and NP-Complete are sets of problems, defined as follows:
+Let A be a decision problem.
 \begin{enumerate}
     \item P: can be solved by polynomial time algorithm
     \item NP: can be verified by polynomial time algorithm
-    \item
-    \item
+    \item NP-hard: Every problem in NP is reducible to A in polynomial time
+    \item NP-complete: A is in NP and NP-hard
+    \item NP-intermediate: If P $\ne$ NP, then there exists some decision problems between NP and NP-complete problems. Otherwise, NP-intermediate problems do not exist because in this case every NP-complete problem would fall in P, and by definition, every problem in NP can be reduced to an NP-complete problem.
 \end{enumerate}
 
-\section{coNP}
+\subsection{Ladner's theorem}
 
-\section{Space complexity (PSPACE and NPSPACE)}
+\begin{theorem}
+    If P $\ne$ NP, there are problems in NP$\setminus$P that are not NPC.
+\end{theorem}
 
-\section{Polynomial Hierarchy (PH)}
+\subsection{coNP and coNP-complete}
+
+\begin{definition}
+    coNP $:= \{L | \Bar{L} \in NP\}$
+\end{definition}
+
+\begin{definition}
+    A language L is coNP-complete if $L \in $ coNP and $\forall A \in$ coNP, $A \leq_p L$, i.e. every coNP problem is reducible to L in polynomial time.
+\end{definition}
+
+\begin{remark}
+    We can also write $\Bar{L} \in $ coNP if $\Bar{L}$ has a polynomial time verifiers. i.e. given a false instance of $L$, we can return true.
+\end{remark}
+
+\begin{theorem}
+    If L is NP-complete, then $\Bar{L}$ is coNP-complete.
+\end{theorem}
+
+The proof for the theorem is easy.
+
+\subsection{Strongly NP-completeness}
+
+Any NP-complete problem without numerical data is strongly NP-complete.
+
+\begin{definition}
+    NP-complete problem which remains NP-complete when all numbers in the input are bounded by some polynomial in the length of the input is called strongly NP-complete.
+\end{definition}
+
+\subsection{Working examples}
+
+\begin{example}
+    The COUNTFACTORS problem is defined as follows:
+    \par \textbf{Instance:} positive integers N and k
+    \par \textbf{Question:} Does N have at least k prime factors?
+\end{example}
+
+\noindent Observe that the prime factorization problem is in NP since a factor $p < N$ such that $p | n$ serves as a witness of a yes instance. Set count = 0 and check if i is a prime factor from $i = 1$ to $i = N$. If count $\geq k$, return yes. Otherwise return false. Hence, COUNTFACTORS is in NP.
+\\
+\\Similarly, if count $< k$, we can return true for the complement of the problem. Hence, COUNTFACTORS is also in coNP.
+
+\begin{example}
+    The SUBSET-SUM problem (Chapter 34.5.5) was shown to be NP-hard by a polynomial-time reduction from 3-CNF-SAT.
+    \\
+    \\
+    SUBSET-SUM = $\{\left \langle S, t \right \rangle : $ there exists a subset $S' \subset S $ such that $t =  {\textstyle \sum_{s\in S'}s} $ $\}$
+\end{example}
+
+\begin{remark}
+    As with any arithmetic problem, it is important to recall that our standard encoding assumes that the input integers are coded in binary. With this assumption in mind, we can show that the subset-sum problem is unlikely to have a fast algorithm.
+\end{remark}
+
+\section{Time and Space complexity (PSPACE and NPSPACE)}
+
+\subsection{Overview of time and space hierarchy}
+
+\begin{enumerate}
+    \item PSPACE - decision problems that can be solved by algorithms that use a polynomial amount of space
+    \item NPSPACE - decision problems that can be verified by algorithms that use a polynomial amount of space
+    \item EXPTIME - decision problems that can be solved by algorithms with exponential running time
+    \item NEXPTIME - decision problems that can be verified by algorithms with exponential running time
+    \item EXPSPACE - decision problems that can be solved by algorithms that use an exponential amount of space
+    \item NEXPSPACE - decision problems that can be verified by algorithms that use an exponential amount of space
+\end{enumerate}
+
+\subsection{More Classes}
+
+\subsubsection{P, NP, coNP $\subseteq$ PSPACE}
+Recall that PSPACE = problems that are solved by algorithms requiring polynomial space. Clearly, P $\subseteq$ PSPACE. Consider a Turing Machine that need unit time to process single instructions. If we can solve an algorithm in polynomial time, that means we only visit polynomial space of cells. Hence, the result follows.
+\\
+\\
+Moreover, NP $\subseteq$ PSPACE. Given a boolean formula with n variables. Think of a truth-value assignment as a sequence of 0's and 1's, where 0 indicates false and 1 indicates true. If there are n variables, then there are n bits in the sequence. But a sequence of bits is just a binary number. We can try all assignments by starting with 0 and adding 1 each time around a loop, since adding 1 moves to the next collection of values to try. Since SAT is in PSPACE and SAT is NP-complete, every problem in NP is in PSPACE.
+\\
+\\
+PSPACE is defined in terms of deterministic algorithms. So it is closed under complementation. Consequently, coNP $\subseteq$ PSPACE.
+
+\subsubsection{Relationship between TIME and SPACE classes}
+
+\begin{definition}
+    TIME(f(n)) is the class of all decision (yes/no) problems that can be solved (deterministically) in time O(f(n)).
+\end{definition}
+
+\begin{definition}
+    SPACE(f(n)) is the class of all decision (yes/no) problems that can be solved (deterministically) in space O(f(n)).
+\end{definition}
+
+\noindent By definition, a program that loops forever uses infinitely much space. Notice that we can define P and PSPACE in terms of TIME and SPACE classes.
+
+\begin{definition}
+    P = $\cup _{k>0}$ TIME($n^k$)
+\end{definition}
+
+\begin{definition}
+    PSPACE = $\cup _{k>0}$ SPACE($n^k$)
+\end{definition}
+
+\begin{remark}
+    We cannot use more space than time.  Recall that our official model is a Turing machine. A Turing machine can only move its head to the right one cell per step.  So an algorithm that uses time O(f(n)) must also use space O(f(n)). As a consequence, for every function $f(n)$, TIME$(f(n)) \subseteq$ SPACE$(f(n))$
+\end{remark}
+
+\subsubsection{Savitch's theorem}
+
+We need to look at space classes defined in terms of nondeterministic algorithms.
+
+\begin{definition}
+    NSPACE(f(n)) is the class of all decision problems that can be solved by nondeterministic algorithms using space O(f(n)).
+\end{definition}
+
+\begin{theorem}
+    Savitch's theorem: NSPACE(f(n)) $\subseteq$ SPACE$(f(n)^2)$.
+\end{theorem}
+
+\begin{remark}
+    Define NPSPACE to be the class of all decision problems that can be solved nondeterministically in polynomial space.  Since converting a nondeterministic machine to a deterministic machine only squares the space, it is clear that NPSPACE = PSPACE.
+\end{remark}
+
+\subsubsection{PSPACE-complete}
+
+\begin{definition}
+    Decision problem A is PSPACE-complete if both of the following are true.
+    \begin{enumerate}
+        \item A $\in$ PSPACE
+        \item For every X $\in$ PSPACE, X $\leq_p$ A.
+    \end{enumerate}
+\end{definition}
+
+\subsubsection{Is NP = PSPACE?}
+
+This is still a conjecture that someone believe that NP $\ne$ PSPACE.
+
+\subsection{Time and Space Hierarchy Theorem}
+
+Recall that we have the following relationship:
+\begin{center}
+    P $\subseteq$ NP $\subseteq$ PSPACE = NPSPACE $\subseteq$ NEXPTIME $\subseteq$ EXPSPACE = NEXPSPACE
+\end{center}
+
+\noindent EXPTIME is a very large class. It is know that P $\subseteq$ NP $\subseteq$ PSPACE $\subseteq$ EXPTIME, and it is conjectured that all of those inclusions are proper: that is, P $\subset$ NP $\subset$ PSPACE $\subset$ EXPTIME. P and EXPTIME are defined in terms of deterministic algorithms and both in terms of time. That makes it possible to prove that P $\ne$ EXPTIME.
+\\
+\\
+Time and Space hierarchy tell us that
+\begin{enumerate}
+    \item P $\subsetneq$ EXPTIME
+    \item PSPACE $\subsetneq$ EXPSPACE
+    \item NP $\subsetneq$ NEXPTIME
+\end{enumerate}
+
+\subsection{Polynomial Hierarchy (PH)}
+
+\subsubsection{Oracle definition}
+The polynomial hierarchy is a hierarchy of complexity classes in computational complexity theory. It is a generalization of the concept of the complexity class NP.
+\\
+\\
+For the oracle definition of the polynomial hierarchy, define $\bigtriangleup_0^p:=\Sigma_0^p:=\Pi_0^p=P$,where P is the set of decision problems solvable in polynomial time. Then for i $\geq$ 0 define
+\begin{align*}
+    & \bigtriangleup_{i+1}^p:=P^{\Sigma_i^P} \\
+    & \Sigma_{i+1}^p:=NP^{\Sigma_i^p} \\
+    & \Pi_{i+1}^p:=coNP^{\Sigma_i^p}
+\end{align*}
+where $P^A$ is the set of decision problems solvable in polynomial time by a Turing machine augmented by an oracle for some complete problem in class A; the class $NP^A$ and $coNP^A$ are defined analogously. For example, $\Sigma_1^p = NP$, $\Pi_1^p = coNP$ and $\bigtriangleup_2^p = P^{NP}$ is the class of problems solvable in polynomial time by a deterministic Turing machine with an oracle or some NP-complete problem.
+\subsubsection{Relations between classes in PH}
+The union of all classes in the polynomial hierarchy is the complexity class \textbf{PH}.
+\\
+\\
+The definitions imply the relations:
+\begin{align*}
+    & \Sigma_i^p \subseteq \bigtriangleup_{i+1}^p \subseteq \Sigma_{i+1}^p \\
+    & \Pi_i^p \subseteq \bigtriangleup_{i+1}^p \subseteq \Pi_{i+1}^p\\
+    & \Sigma_i^p = co\Pi_i^p
+\end{align*}
+
+\begin{remark}
+    It is an open question whether any of these inclusions are proper, though it is widely believed that they all are.
+\end{remark}
 
 \section{Fixed Parameter Tractable (FPT)}
 
+In the classical study of algorithms and complexity, the running time of an algorithm is stated as a function of the size of its input. In the parameterized study of algorithms and complexity, the running time of an algorithm is stated as a function of both the size of the input and a parameter which is a numerical value that depends on the input and is obtained via a parameterization.
+\\
+\\
+For NP hard problem, we may need $O(2^n)$ running time while the solution maybe of size $O(n^C2^k)$ where $k << n$. Not all problem can by solved by parameterized algorithm, problems that can be solved by this method is called fixed parameter tractable. If a problem cannot be solved by fpt algorithm, we may classify them as W[1]-HARD or W[2]-HARD. For example, Maximal Clique and Independent Set are in W[1]-HARD.
+
+\begin{definition}
+    A \textbf{parameterization} for a problem is a computable function that accepts as input any problem instance and returns an interger:
+    \begin{center}
+        $\kappa$ : \{problem instances\} $\longrightarrow \mathbb{N}$
+    \end{center}
+\end{definition}
+
+\begin{remark}
+    While this definition is very liberal allowing any computable function to be considered a parameterization, some parameterizations are more useful than others from a pratical persepctive.
+\end{remark}
+
+\subsection{Vertex Cover Problem}
+
+This example is from CMU 15-750 note. Consider a real world problem:
+\\
+\\
+\textbf{We have a set of roads and junctions. We want to place security cameras at specific junctions such that all roads are monitored.}
+\\
+\\
+Now, our goal is to minimize the total number of cameras placed. We can see that this is a Vertex Cover problem, which is NP-complete!
+
+\begin{enumerate}
+    \item Approximation algorithms
+    \begin{itemize}
+        \item We know that we could find a 2-approximate vertex cover. However, cameras might be
+        expensive, so a factor of 2 might still be unsatisfactory.
+        \item If P $\ne$ NP , it is hard to approximate vertex cover to within a factor of 1.3, so we cannot
+        expect to do better than this in general.
+    \end{itemize}
+    \item FPT algorithms
+    \begin{itemize}
+        \item If we know that the minimum number of cameras that we need to place is small, we can do better.
+        \item We fix parameter k, and solve the following problem:
+            \begin{itemize}
+                \item If OPT $\leq k$, return OPT // OPT = Optimal Vertex Cover
+                \item Else return Failure
+            \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Fixed Parameter Tractability}
+
+We again follow CMU 15-750 note. I personally think it is easier for beginner to understand.
+
+\begin{definition}
+    A fixed parameter tractable (FPT) algorithm with fixed parameter $k$ and input size $n$ is an algorithm with $O(f(k)\times poly(n))$ time complexity.
+\end{definition}
+
+\begin{remark}
+    Note that:
+    \begin{enumerate}
+        \item $f(k)$ does not depend on $n$
+        \item $f(k)$ must not be polynomial of $k$, otherwise we could let $k=n$ and conclude P = NP. 
+    \end{enumerate}
+\end{remark}
+\noindent The motivation behind the definition could be illustrated by the vertex cover example. Suppose k = 20 and n = 10000, where k is the fixed parameter, and n is the number of roads and junctions. Consider the computational time for the follow algorithms:
+\begin{enumerate}
+    \item Brute force: $2^n = 2^{10000}$
+    \item Try all set of k junctions: $C^{10000}_{20} = 10^{80}$
+    \item FPT algorithms: $2^k * n^c = 2^{20} + 10000^c = 10^{10}$
+\end{enumerate}
+For more detail, please go check CMU 15-750 lecture 38.
+
+\subsection{Kernelization algorithms}
+
 \section{Algorithms using prediction}
+
+\subsection{Heurstic}
 
 
 
