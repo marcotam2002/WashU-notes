@@ -287,6 +287,49 @@ V_{R_1}(i_m)
 
 \section{Final Remarks}
 
+\subsection{Limiting Behaviour}
+
+As in the DTMC, we define the limiting distribution of a CTMC as a vector $\tilde{\pi}$ such that
+\begin{center}
+    $\lim_{t \to \infty} P_{i,j}(t) = \lim_{t \to \infty} P(X_t =j|X_0=i)=\tilde{\pi_j} $
+\end{center}
+for all j, regardless of i.
+\\
+\\This is equivalent to either of the following
+\begin{enumerate}
+    \item $\lim_{t \to \infty} \alpha P(t) = \tilde{\pi}$, for any initial distribution $\alpha$
+    \item $\lim_{t \to \infty} P(t) = \begin{bmatrix}
+ \tilde{\pi} \\
+\vdots \\
+\tilde{\pi} \\
+\end{bmatrix}$
+\end{enumerate}
+
+\subsection{Existence of the long-term limiting distributions}
+
+We have already seen one criterion for the existence of the long-term limiting distributions. Namely, if all conditions below hold true:
+\begin{enumerate}
+    \item Q is diagonalizable.
+    \item The eigenvalue $\lambda = 0$ is simple.
+    \item All nonzero eigenvalues are negative.
+\end{enumerate}
+
+\noindent In fact, it can be shown that $\pi$ is the row corresponding to $\lambda = 1$. For example, if the diagonal 1 is in the last row, then $\pi$ is the last row of $U^{-1}$.
+
+\subsection{Ergodic Theorem}
+
+Is there another criterion in terms of dynamical concepts such as irreducibility? Yes. The main theorem is the following:
+
+\begin{theorem}
+    Suppose that a continuous Markov chain is irreducible (i.e., its embedded Markov chain is irreducible) and has a stationary distribution $\pi$, then
+    \begin{center}
+        $\lim_{t \to \infty} P(X_t = j | X_0 = i) = \pi_j$.
+    \end{center}
+\end{theorem}
+\begin{remark}
+    The embedded Markov chain $Y$ is irreducible if $i \mapsto j$, for any $i \neq j$. Recall that $r(i,j) = \frac{q(i,j)}{\lambda_i}$ is the transition probability matrix of $Y$. Thus, the chain is irreducible if, for any $i \neq j$. There is a path that goes from $i$ to $j$ in the transition rates graph of the chain.
+\end{remark}
+
 \section{Brownian Motion}
 
 Brownian motion is a stochastic process, which is rooted in a physical phenomenon discovered almost 200 years ago. In 1827, the botanist Robert Brown, observing pollen grains suspended in water, noted the erratic and continuous movement of tiny particles ejected from the grains. He studied the phenomenon for many years, ruled out the belief that it emanated from some "life force" within the pollen, but could not explain the motion. Neither could any other scientist of the 19th century.
@@ -901,6 +944,98 @@ While we use that $B_t | B_u, u \leq s \sim N(B_s, t - s)$ and $E[e^{\lambda N(\
     \end{enumerate}
 \end{example}
 
-\noindent By translation, the required probability $= P(B_t )$
+\noindent By translation, the probability is equal to the probability that a standard Brownian motion started at 0 reaches y = 5 before y = -4 (a = 5, b = 4), and by the optional stopping theorem on quadratic martingale, we have $p = \frac{b}{a+b} = \frac{4}{9}$. Also, the expectation is $ab = 20$. Check the optional stopping theorem section for more details.
+
+\begin{example}
+    Let $\{Y_t\}_{t \geq 0}$ be a Brownian motion with drift $\mu \neq 0$ and variance $\sigma^2$ (i.e. $Y_t = \mu t + \sigma B_t$). Let $a, b > 0$.
+    \begin{enumerate}
+        \item Let $T = min\{t \geq 0: Y_t = a$ or $Y_t = -b \}$. Argue that $T$ is a stopping time; i.e. for any $t$, the occurrence of the event $\{T \leq t\}$ can be determined based only on the values of $B$ up to time t.
+        \item Show that $X_t = e^{-\frac{2\mu Y_t}{\sigma^2}}$ is a martingale with respect to the Brownian motion $B_t$.
+        \item Use the previous parts as well as the optional stopping theorem to show that $E(e^{-\frac{2\mu Y_t}{\sigma^2}}) = 1$. Make sure to justify that T satisfies the conditions for the optional sampling theorem to hold.
+        \item Use the previous part to find the probability that Y hits a before -b, for $a, b > 0$.
+    \end{enumerate}
+\end{example}
+\noindent Note that $T = \{T_a, T_{-b}\}$, where $T_a$ and $T_{-b}$ are the first passage times of level $a$ and $-b$, respectively. Then, for any $t \in (0, \infty)$, $\{T \leq t\} \subseteq \{T_a \leq t\} \cup \{T_{-b} \leq t\}$. But, both $\{T_a \leq t\}$ and $\{T_{-b} \leq t\}$ are events that can be determined from observing $Y_s$ for $s \leq t$. Thus, we can determine if $\{T \leq t\}$ occurred or not from observing $Y_s$ for $s \leq t$. In particular, since $Y_t = \mu t + \sigma B_t$, we can determine if $\{T \leq t\}$ occurred or not from observing $B_s$ for $s \leq t$. This shows T is a stopping time.
+\\
+\\Note that $Y_t = \mu t + \sigma B_t$. Let $X_t = e^{-\frac{2\mu Y_t}{\sigma^2}}$, which in terms of $B_t$ takes the form:
+\begin{center}
+    $X_t = e^{-\frac{2\mu Y_t}{\sigma^2}} = e^{\frac{2\mu}{\sigma}B_t-\frac{2\mu ^2 t}{\sigma^2}}$.
+\end{center}
+\noindent Note that $X_t$ is also of the form $X_t = e^{\lambda B_t + \frac{\lambda ^2}{2}t}$ with $\lambda = -2\mu / \sigma$. Therefore, $X_t$ is a martingale.
+\\
+\\By the optional stoppnig theorem,
+\begin{center}
+    $E[X_T] = E[e^{-\frac{2\mu Y_T}{\sigma^2}}] = E[X_0] = 1$
+\end{center}
+\noindent It remains to show that the optional stopping theorem can indeed be applied. So, we need to check that $E[X_t | 1_{t < T}] < \infty $. Indeed, this is the case because $|Y_t| \leq max\{a,b\}$, whenever $t < T$. Then, $X_t | 1_{t < T} \leq e^{2|\mu|max\{a,b\}/\sigma^2} < \infty$ and thus, $E[X_t | 1_{t < T}] < \infty$.
+\\
+\\ Since $Y_t = \left\{\begin{matrix}
+ a & \text{with prob }p  \\
+ -b & \text{with prob } 1-p
+\end{matrix}\right.$, we have
+\begin{center}
+    $E[e^{-\frac{2\mu Y_T}{\sigma^2}}] = pe^{-\frac{2\mu a}{\sigma^2}} + (1-p)e^{\frac{2\mu b}{\sigma^2}} = 1$
+\end{center}
+\noindent We can then solve for $p$ and obtain that
+\begin{center}
+    $p = \frac{1-e^\frac{2\mu b}{\sigma^2}}{e^{-\frac{2\mu a}{\sigma^2}} - e^{\frac{2\mu b}{\sigma^2}}}$
+\end{center}
+
+\begin{example}
+    Let $\{X_t\}_{t \geq 0}$ be a continuous-time Markov chain with state space {1,2} and rates q(1, 2) = 1 and q(2, 1) = 4. The following two parts must be done by “hand” (without using R or other software). (a) Find the transition probability matrix $P(t)$ and (b) the stationary distribution.
+\end{example}
+
+Note that we have $Q = \begin{bmatrix}
+ -1 & 1\\
+ 4 & -4
+\end{bmatrix}$. By some computation, it gives $\lambda = 0$ and $\lambda = 5$. With respect to different eigenvalues, we have eigenvectors $[1 1]$ and $[1 -4]$. It follows that $U = \begin{bmatrix}
+ 1 & 1\\
+ 1 & -4
+\end{bmatrix}$ and we can find $P_t$ by $Ue^{Qt}U^{-1}$.
+\\
+\\To find the stationary distribution, we can take the limit as t goes to infinity or process as follows. For the stationary distribution we need solve the system $\pi Q = 0$. The first entry is
+\begin{center}
+    $-\pi_1 + 4\pi_2 = 0$
+\end{center}
+Adding the equation above to $\pi_1 + \pi_2 = 1$, we get
+\begin{center}
+    $5\pi_2 = 1 \Rightarrow \pi_2 = \frac{1}{5}$
+\end{center}
+Then, the stationary solution is $(\pi_1, \pi_2) = (4/5, 1/5)$.
+
+\begin{example}
+    A Markov chain $\{X_t\}_{t \geq 0}$ on \{1, 2, 3, 4\} has generator matrix:
+    \begin{center}
+        $\begin{bmatrix}
+        -2 & 1 & 1 & 0 \\
+        1 & -3 & 1 & 1 \\
+        2 & 2 & -4 & 0 \\
+        1 & 2 & 3 & -6
+        \end{bmatrix}$
+    \end{center}
+Use technology as needed for the following:
+\begin{enumerate}
+    \item Find $P(X_1 = 3 | X_0 = 1)$;
+    \item Find $P(X_5 = 1, X_4 = 4 | X_{1.5} = 3, X_1 = 1)$
+    \item Find $P(X_{2.5} = 1)$ if the initial distribution of the Markov chain is $\alpha = [1/4, 1/4, 1/8, 3/8]$.
+    \item Find the long-term proportion of time the chain spends in state 1;
+    \item For the chain started in state 2, find the long-term probability that the chain is in state 3.
+\end{enumerate}
+\end{example}
+
+Note that $P(X_1 = 3 | X_0 = 1)$ and we have
+\begin{center}
+    \begin{align*}
+        P(X_5 = 1, X_4 = 4 | X_{1.5} = 3, X_1 = 1) & = P(X_5 = 1, X_4 = 4 | X_{1.5} = 3) \\
+        & = P(X_5 = 1| X_4 = 4, X_{1.5} = 3) P(X_4 = 4 | X_{1.5} = 3) \\
+        & = P(X_5 = 1| X_4 = 4) P(X_4 = 4 | X_{1.5} = 3) \\
+        & = P(X_1 = 1| X_0 = 4) P(X_{2.5} = 4| X_0 = 3) \\
+        & = P_{4,1}(1)P_{3,4}(2.5)
+    \end{align*}
+\end{center}
+
+\noindent For part 3, we need to find $[\alpha P_{2.5}]_1 = 0.407$.
+\\
+\\For part 4, this is the first entry of the limiting distribution of the chain, and for part 5, it is the limit of $P_{2,3}(t)$.
 
 \end{document}
